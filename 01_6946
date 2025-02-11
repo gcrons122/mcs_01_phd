@@ -1,0 +1,57 @@
+/////////////////////////////////////////////////////////////////////////////
+// MAIN ANALYSIS                                                           //
+/////////////////////////////////////////////////////////////////////////////
+
+// Import imputed data from file 
+use "mi_stata_01_6946_dataset.dta", clear // 
+
+// Set survey design
+svyset SPTN00 [pweight= EOVWT1], strata(PTTYPE2) fpc(NH2)
+
+// Set mi 
+mi import flong, m (Imputation_) id (MCSID)
+
+// Register imputed variables
+mi register imputed PM10_1 PM10_2 PM10_3 PM10_4 urban1 urban2 urban3 urban4 Age1 garden1 garden2 garden3 garden4 move2 move3 move4 poverty_indicator education_sweep2 two_natural_parents owns_home BDKESS00 school_fees2 school_fees3 school_fees4 London1 London2 London3 London4 Settlement1 Settlement2 Settlement3 Settlement4
+
+// Register regular if wanted 
+
+// Reshape long for analysis
+mi reshape long Greenspace Country IQ_ PM10_ urban Age move garden Emotions Conduct Hyper Peer, i(MCSID) j(Year)
+
+// Summarize Age
+summarize Age
+
+// Generate centred age
+mi passive: generate centred_age = Age - 6.672207
+
+/////////////////////////////////////////////////////////////////////////////
+// ANALYSES FOR MAIN OUTCOMES (IQ, Conduct, etc.)                            //
+/////////////////////////////////////////////////////////////////////////////
+
+// Unconditional Means Model for IQ (aka cognitive ability)
+mi estimate, variance: mixed IQ_ c.centred_age || SPTN00: || MCSID: c.centred_age, pweight(EOVWT1) covariance(unstructured) var 
+
+// Model 1 - Addition of main variables for IQ (+ survey design)
+mi estimate, variance: mixed IQ_ c.centred_age c.Greenspace c.Greenspace#c.centred_age i.PTTYPE2 || SPTN00: || MCSID: c.centred_age, pweight(EOVWT1) covariance(unstructured) var 
+
+// Model 2 - Addition of environment level variables 
+mi estimate, variance: mixed IQ_ c.centred_age c.Greenspace c.Greenspace#c.centred_age i.PTTYPE2 i.urban c.PM10_ i.garden || SPTN00: || MCSID: c.centred_age, pweight(EOVWT1) covariance(unstructured) var 
+
+// Model 3 - Addition of child level variables 
+mi estimate, variance: mixed IQ_ c.centred_age c.Greenspace c.Greenspace#c.centred_age i.PTTYPE2 i.urban c.PM10_ i.garden i.sex i.Ethnicity || SPTN00: || MCSID: c.centred_age, pweight(EOVWT1) covariance(unstructured) var 
+
+/ Model 4 - Addition of family level variables 
+mi estimate, variance: mixed IQ_ c.centred_age c.Greenspace c.Greenspace#c.centred_age i.PTTYPE2 i.urban c.PM10_ i.garden i.sex i.Ethnicity i.move i.two_natural_parents i.owns_home i.poverty_indicator i.education_sweep2 c.kessler6 || SPTN00: || MCSID: c.centred_age, pweight(EOVWT1) covariance(unstructured) var 
+
+
+// Continue for the EBD but include c.centred_age#c.centred_age term starting ar unconditional means model ...
+
+/////////////////////////////////////////////////////////////////////////////
+// ADDITIONAL ANALYSES (e.g., Gender, Settlement Types, School Fees  etc.)                 //
+/////////////////////////////////////////////////////////////////////////////
+
+// Add gender interaction terms and other interactions as necessary
+mi estimate, variance: mixed IQ_ c.centred_age c.Greenspace c.centred_age#c.Greenspace i.PTTYPE2 i.urban c.PM10_ i.garden i.sex i.Ethnicity i.move i.two_natural_parents i.owns_home i.poverty_indicator i.education_sweep2 c.kessler6 i.GENDER#c.centred_age i.GENDER#c.Greenspace i.GENDER#c.Greenspace#c.centred_age || SPTN00: || MCSID: centred_age, pweight(EOVWT1) covariance(unstructured) var
+
+// Repeat similar models for Conduct outcomes, but include c.centred_age#c.centred_age term ...
