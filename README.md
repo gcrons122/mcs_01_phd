@@ -1,14 +1,14 @@
-# PhD Objective One, Year 1:  Analysis Plan and README file for GitHub
+PhD Objective One, Year 1:  Analysis Plan and README file for GitHub
 
 
 Analysis Plan Overview
 1.	Objectives:
-o	Understand the relationship between ward-level greenspace and child developmental outcomes.
-o	Examine both the intercept and slope associations.
+- Understand the relationship between ward-level greenspace and child developmental outcomes.
+- Examine both the intercept and slope associations.
 2.	Outcome Variables:
-o	SDQ (Strengths and Difficulties Questionnaire):
-	Use derived and raw forms across sweeps.
-	Perform necessary transformations (e.g., reversing scores, calculating Cronbach’s alpha).
+- 	SDQ (Strengths and Difficulties Questionnaire):
+ - 	Use derived and raw forms across sweeps.
+ - 	Perform necessary transformations (e.g., reversing scores, calculating Cronbach’s alpha).
 o	Cognitive Assessment:
 	Standardise scores to T-scores (mean = 50, SD = 10) for PCA and comparison.
 	PCA and then standardise (mean = 100, SD =15)
