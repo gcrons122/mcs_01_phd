@@ -1,29 +1,4 @@
-/////////////////////////////////////////////////////////////////////////////
-// MAIN ANALYSIS                                                           //
-/////////////////////////////////////////////////////////////////////////////
 
-// Import imputed data from file 
-use "mi_stata_01_6946_dataset.dta", clear // 
-
-// Set survey design
-svyset SPTN00 [pweight= EOVWT1], strata(PTTYPE2) fpc(NH2)
-
-// Set mi 
-mi import flong, m (Imputation_) id (MCSID)
-
-// Register imputed variables
-mi register imputed PM10_1 PM10_2 PM10_3 PM10_4 urban1 urban2 urban3 urban4 Age1 garden1 garden2 garden3 garden4 move2 move3 move4 poverty_indicator education_sweep2 two_natural_parents owns_home BDKESS00 school_fees2 school_fees3 school_fees4 London1 London2 London3 London4 Settlement1 Settlement2 Settlement3 Settlement4
-
-// Register regular if wanted 
-
-// Reshape long for analysis
-mi reshape long Greenspace Country IQ_ PM10_ urban Age move garden Emotions Conduct Hyper Peer, i(MCSID) j(Year)
-
-// Summarize Age
-summarize Age
-
-// Generate centred age
-mi passive: generate centred_age = Age - 6.672207
 
 /////////////////////////////////////////////////////////////////////////////
 // ANALYSES FOR MAIN OUTCOMES (IQ, Conduct, etc.)                            //
